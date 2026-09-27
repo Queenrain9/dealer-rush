@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+
       - name: Select iPhone simulator
         run: |
           xcodebuild -version
@@ -33,6 +34,7 @@ jobs:
               output.write('SIMULATOR_ID=' + selected['udid'] + '\n')
           print(selected['name'], selected['udid'])
           PY
+
       - name: Build and run XCTest
         run: |
           set -o pipefail
@@ -40,25 +42,47 @@ jobs:
             -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
             -derivedDataPath build -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO test 2>&1 | tee build.log
+
       - name: Package native simulator app
         run: |
           mkdir -p artifacts
           ditto -c -k --sequesterRsrc --keepParent \
             build/Build/Products/Debug-iphonesimulator/DealerRush.app \
             artifacts/DealerRush-Simulator.zip
+
+      - name: Capture app screens
+        run: |
+          set -e
           xcrun simctl boot "$SIMULATOR_ID" || true
           xcrun simctl bootstatus "$SIMULATOR_ID" -b
           xcrun simctl install "$SIMULATOR_ID" build/Build/Products/Debug-iphonesimulator/DealerRush.app
-          xcrun simctl launch "$SIMULATOR_ID" com.danbi.dealerrush
-          sleep 5
-          xcrun simctl io "$SIMULATOR_ID" screenshot artifacts/Home.png
-      - name: Save simulator app and screenshot
+
+          capture() {
+            route="$1"
+            filename="$2"
+            xcrun simctl terminate "$SIMULATOR_ID" com.danbi.dealerrush || true
+            xcrun simctl launch "$SIMULATOR_ID" com.danbi.dealerrush --screenshot "$route"
+            sleep 2
+            xcrun simctl io "$SIMULATOR_ID" screenshot "artifacts/$filename.png"
+          }
+
+          capture home Home
+          capture practice Practice
+          capture showdown Showdown
+          capture pot Pot-Calculation
+          capture sidepot Side-Pot
+          capture daily Daily-Challenge
+          capture stats Stats
+          capture settings Settings
+
+      - name: Save simulator app and screenshots
         uses: actions/upload-artifact@v4
         with:
           name: DealerRush-Simulator
           path: artifacts/
           if-no-files-found: error
           retention-days: 7
+
       - name: Save build and test evidence
         if: always()
         uses: actions/upload-artifact@v4
