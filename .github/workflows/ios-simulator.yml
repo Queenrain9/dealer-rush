@@ -1,0 +1,70 @@
+name: iOS Simulator
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-simulator-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select iPhone simulator
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available --json > /tmp/devices.json
+          python3 - <<'PY'
+          import json, os
+          devices = json.load(open('/tmp/devices.json'))['devices']
+          candidates = [d for runtime, values in devices.items() if 'iOS' in runtime for d in values if d['name'].startswith('iPhone') and d['isAvailable']]
+          if not candidates:
+              raise SystemExit('No available iPhone simulator')
+          selected = candidates[0]
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('SIMULATOR_ID=' + selected['udid'] + '\n')
+          print(selected['name'], selected['udid'])
+          PY
+      - name: Build and run XCTest
+        run: |
+          set -o pipefail
+          xcodebuild -project DealerRush.xcodeproj -scheme DealerRush \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -derivedDataPath build -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO test 2>&1 | tee build.log
+      - name: Package native simulator app
+        run: |
+          mkdir -p artifacts
+          ditto -c -k --sequesterRsrc --keepParent \
+            build/Build/Products/Debug-iphonesimulator/DealerRush.app \
+            artifacts/DealerRush-Simulator.zip
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          xcrun simctl install "$SIMULATOR_ID" build/Build/Products/Debug-iphonesimulator/DealerRush.app
+          xcrun simctl launch "$SIMULATOR_ID" com.danbi.dealerrush
+          sleep 5
+          xcrun simctl io "$SIMULATOR_ID" screenshot artifacts/Home.png
+      - name: Save simulator app and screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: DealerRush-Simulator
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save build and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Xcode-Evidence
+          path: |
+            build.log
+            TestResults.xcresult
+          retention-days: 7

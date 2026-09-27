@@ -1,0 +1,80 @@
+// !$*UTF8*$!
+{
+ archiveVersion = 1;
+ classes = {};
+ objectVersion = 56;
+ objects = {
+/* Begin PBXBuildFile section */
+  C45091173EDDF2F06337C795 = { isa = PBXBuildFile; fileRef = 5F8F2DA32790DF4C897B4E74; };
+  C574A1894FEB2E2BF6C4EF95 = { isa = PBXBuildFile; fileRef = 968962F4802CD9ADC0155DD6; };
+  8BC6D4AE7982E6E3B1282075 = { isa = PBXBuildFile; fileRef = E318C84F8A3EEBF0961BABD1; };
+  29F1FA11F81AA16478759D99 = { isa = PBXBuildFile; fileRef = 6BEEE50288C5DA91397B5EC5; };
+  ADE9932A741CBC3DF122D34C = { isa = PBXBuildFile; fileRef = 31FE866251B34FBBEEB0F762; };
+  C73CFE7C3481A02AAB0EDF1E = { isa = PBXBuildFile; fileRef = E2624735670FFB1CF511810B; };
+  BC823F687F8B2E5376E4956F = { isa = PBXBuildFile; fileRef = B8F69660BA37DE80A75D3405; };
+  5666B8DBEED87C225D30F438 = { isa = PBXBuildFile; fileRef = 207C25A90A4EF27D8244AE73; };
+  F8D06D6FC4DC375F84CE949A = { isa = PBXBuildFile; fileRef = 20A0317B0B209032695CDFAB; };
+  0D6BD86431D7778DA9370569 = { isa = PBXBuildFile; fileRef = 22100A7665327C51D0F7B725; };
+  42FD47F56749D5E99A8E94B9 = { isa = PBXBuildFile; fileRef = E72B6216E35693023640649E; };
+  C3D70BB40227DB0D762E8DD3 = { isa = PBXBuildFile; fileRef = 231E07FB299311C2033CA4BE; };
+  A46322E68703E432F5B7E1CC = { isa = PBXBuildFile; fileRef = 3CF964E60272AD12EFA93610; };
+  F51EB384096C42B96F1687C3 = { isa = PBXBuildFile; fileRef = 11C4E88C0C1622F6DE1432CE; };
+  9F434062CC02227E5D86B364 = { isa = PBXBuildFile; fileRef = 394D52763F21710356225C34; };
+  06BF7982B997C0289D5F99FB = { isa = PBXBuildFile; fileRef = C0AC791F5ADF7698847484C5; };
+  3E92F6D2BFDFE841F552B12E = { isa = PBXBuildFile; fileRef = E43CC3CD1881B9F14B24F53F; };
+  BD8E089BBF4FBB7AA1DE0AFF = { isa = PBXBuildFile; fileRef = 8D25AF5D37B569B540505ACE; };
+  D9509F132E27D0A21485A211 = { isa = PBXBuildFile; fileRef = 5E6C757DF09738BDC433810B; };
+  BFA85E264ED32962DC5BD53A = { isa = PBXBuildFile; fileRef = 0F4AC29256E171D3E7108AE9; };
+/* End PBXBuildFile section */
+  BE195B3D9698233CD82E9F8B = { isa = PBXContainerItemProxy; containerPortal = 46F86FAA6BBF9AC94A7E4595; proxyType = 1; remoteGlobalIDString = E3435DDA2687639586BF0B70; remoteInfo = DealerRush; };
+/* Begin PBXFileReference section */
+  5F8F2DA32790DF4C897B4E74 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "App/DealerRushApp.swift"; sourceTree = "<group>"; };
+  968962F4802CD9ADC0155DD6 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logic/HandEvaluator.swift"; sourceTree = "<group>"; };
+  E318C84F8A3EEBF0961BABD1 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logic/PotCalculator.swift"; sourceTree = "<group>"; };
+  6BEEE50288C5DA91397B5EC5 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logic/QuestionFactory.swift"; sourceTree = "<group>"; };
+  31FE866251B34FBBEEB0F762 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logic/ScoreCalculator.swift"; sourceTree = "<group>"; };
+  E2624735670FFB1CF511810B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/GameModels.swift"; sourceTree = "<group>"; };
+  B8F69660BA37DE80A75D3405 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Services/Feedback.swift"; sourceTree = "<group>"; };
+  207C25A90A4EF27D8244AE73 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Services/GameCenterManager.swift"; sourceTree = "<group>"; };
+  20A0317B0B209032695CDFAB = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Services/TrainingSession.swift"; sourceTree = "<group>"; };
+  22100A7665327C51D0F7B725 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/DesignSystem.swift"; sourceTree = "<group>"; };
+  E72B6216E35693023640649E = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/GameViews.swift"; sourceTree = "<group>"; };
+  231E07FB299311C2033CA4BE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/HomePracticeViews.swift"; sourceTree = "<group>"; };
+  3CF964E60272AD12EFA93610 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/ProgressViews.swift"; sourceTree = "<group>"; };
+  11C4E88C0C1622F6DE1432CE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogicTests.swift"; sourceTree = "<group>"; };
+  394D52763F21710356225C34 = { isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+  C0AC791F5ADF7698847484C5 = { isa = PBXFileReference; lastKnownFileType = audio.wav; path = "tap.wav"; sourceTree = "<group>"; };
+  E43CC3CD1881B9F14B24F53F = { isa = PBXFileReference; lastKnownFileType = audio.wav; path = "correct.wav"; sourceTree = "<group>"; };
+  8D25AF5D37B569B540505ACE = { isa = PBXFileReference; lastKnownFileType = audio.wav; path = "incorrect.wav"; sourceTree = "<group>"; };
+  5E6C757DF09738BDC433810B = { isa = PBXFileReference; lastKnownFileType = audio.wav; path = "complete.wav"; sourceTree = "<group>"; };
+  84337AD8D27FCD69AF2C4FC2 = { isa = PBXFileReference; explicitFileType = wrapper.application; path = DealerRush.app; sourceTree = BUILT_PRODUCTS_DIR; };
+  B5A2BEBE86215B3F6D160426 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = DealerRushTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+  0F4AC29256E171D3E7108AE9 = { isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+  05409BD51A744326F48469B3 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* Begin PBXGroup section */
+  518DA81DB9B99529C0C0AEBE = { isa = PBXGroup; children = (82CF2A43A7100F086D7FCFDD,A0937472EE5878FA82CB0F7E,547D009064F7C3F13BEF3460,); sourceTree = "<group>"; };
+  82CF2A43A7100F086D7FCFDD = { isa = PBXGroup; children = (5F8F2DA32790DF4C897B4E74,968962F4802CD9ADC0155DD6,E318C84F8A3EEBF0961BABD1,6BEEE50288C5DA91397B5EC5,31FE866251B34FBBEEB0F762,E2624735670FFB1CF511810B,B8F69660BA37DE80A75D3405,207C25A90A4EF27D8244AE73,20A0317B0B209032695CDFAB,22100A7665327C51D0F7B725,E72B6216E35693023640649E,231E07FB299311C2033CA4BE,3CF964E60272AD12EFA93610,AAE953452CCD6DDD91445CEA,); path = "DealerRush"; sourceTree = "<group>"; };
+  A0937472EE5878FA82CB0F7E = { isa = PBXGroup; children = (11C4E88C0C1622F6DE1432CE,); path = "DealerRushTests"; sourceTree = "<group>"; };
+  AAE953452CCD6DDD91445CEA = { isa = PBXGroup; children = (0F4AC29256E171D3E7108AE9,394D52763F21710356225C34,C0AC791F5ADF7698847484C5,E43CC3CD1881B9F14B24F53F,8D25AF5D37B569B540505ACE,5E6C757DF09738BDC433810B,); path = "Resources"; sourceTree = "<group>"; };
+  547D009064F7C3F13BEF3460 = { isa = PBXGroup; children = (84337AD8D27FCD69AF2C4FC2,B5A2BEBE86215B3F6D160426,); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+  E3435DDA2687639586BF0B70 = { isa = PBXNativeTarget; buildConfigurationList = 5505F9AF814A7F0992DE2402; buildPhases = (67281B94473E6F647EB8E42B,3BD34C48B5C5280A6979C3A1,); buildRules = (); dependencies = (); name = DealerRush; productName = DealerRush; productReference = 84337AD8D27FCD69AF2C4FC2; productType = "com.apple.product-type.application"; };
+  5DED2D04DB49D4091162647E = { isa = PBXNativeTarget; buildConfigurationList = E5A230C5C352779E4F6499D2; buildPhases = (786893EE874C58D0F06A97ED,05409BD51A744326F48469B3,); buildRules = (); dependencies = (77402C2A6F0800CC207C5A1C,); name = DealerRushTests; productName = DealerRushTests; productReference = B5A2BEBE86215B3F6D160426; productType = "com.apple.product-type.bundle.unit-test"; };
+  46F86FAA6BBF9AC94A7E4595 = { isa = PBXProject; attributes = { BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 1600; TargetAttributes = { E3435DDA2687639586BF0B70 = { CreatedOnToolsVersion = 16.0; }; 5DED2D04DB49D4091162647E = { CreatedOnToolsVersion = 16.0; TestTargetID = E3435DDA2687639586BF0B70; }; }; }; buildConfigurationList = 7EF2517A8FE63F4681EC5EEA; compatibilityVersion = "Xcode 14.0"; developmentRegion = ko; hasScannedForEncodings = 0; knownRegions = (ko,en,Base,); mainGroup = 518DA81DB9B99529C0C0AEBE; productRefGroup = 547D009064F7C3F13BEF3460; projectDirPath = ""; projectRoot = ""; targets = (E3435DDA2687639586BF0B70,5DED2D04DB49D4091162647E,); };
+  3BD34C48B5C5280A6979C3A1 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (BFA85E264ED32962DC5BD53A,9F434062CC02227E5D86B364,06BF7982B997C0289D5F99FB,3E92F6D2BFDFE841F552B12E,BD8E089BBF4FBB7AA1DE0AFF,D9509F132E27D0A21485A211,); runOnlyForDeploymentPostprocessing = 0; };
+  67281B94473E6F647EB8E42B = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C45091173EDDF2F06337C795,C574A1894FEB2E2BF6C4EF95,8BC6D4AE7982E6E3B1282075,29F1FA11F81AA16478759D99,ADE9932A741CBC3DF122D34C,C73CFE7C3481A02AAB0EDF1E,BC823F687F8B2E5376E4956F,5666B8DBEED87C225D30F438,F8D06D6FC4DC375F84CE949A,0D6BD86431D7778DA9370569,42FD47F56749D5E99A8E94B9,C3D70BB40227DB0D762E8DD3,A46322E68703E432F5B7E1CC,); runOnlyForDeploymentPostprocessing = 0; };
+  786893EE874C58D0F06A97ED = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (F51EB384096C42B96F1687C3,); runOnlyForDeploymentPostprocessing = 0; };
+  77402C2A6F0800CC207C5A1C = { isa = PBXTargetDependency; target = E3435DDA2687639586BF0B70; targetProxy = BE195B3D9698233CD82E9F8B; };
+  7EF2517A8FE63F4681EC5EEA = { isa = XCConfigurationList; buildConfigurations = (4A43692AD8BCEEB8B727C85B,C28449456A5A705A7479770B,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  5505F9AF814A7F0992DE2402 = { isa = XCConfigurationList; buildConfigurations = (0615050D04BD2DC4E6CFFAFF,2761849A6D0E26CA4E1817A1,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  E5A230C5C352779E4F6499D2 = { isa = XCConfigurationList; buildConfigurations = (B48F0637DA179A96BEA0C97B,AAEC77A85B92260B0596B84C,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  4A43692AD8BCEEB8B727C85B = { isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SDKROOT = iphoneos; ENABLE_USER_SCRIPT_SANDBOXING = YES; SWIFT_OPTIMIZATION_LEVEL = -Onone; DEBUG_INFORMATION_FORMAT = dwarf; }; name = Debug; };
+  C28449456A5A705A7479770B = { isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SDKROOT = iphoneos; ENABLE_USER_SCRIPT_SANDBOXING = YES; SWIFT_OPTIMIZATION_LEVEL = -O; DEBUG_INFORMATION_FORMAT = dwarf-with-dsym; }; name = Release; };
+  0615050D04BD2DC4E6CFFAFF = { isa = XCBuildConfiguration; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_ENTITLEMENTS = DealerRush/Resources/DealerRush.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = "DEALER RUSH"; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES; INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO; IPHONEOS_DEPLOYMENT_TARGET = 17.0; MARKETING_VERSION = 1.0.0; PRODUCT_BUNDLE_IDENTIFIER = com.danbi.dealerrush; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_OPTIMIZATION_LEVEL = -Onone; DEBUG_INFORMATION_FORMAT = dwarf; }; name = Debug; };
+  2761849A6D0E26CA4E1817A1 = { isa = XCBuildConfiguration; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_ENTITLEMENTS = DealerRush/Resources/DealerRush.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = "DEALER RUSH"; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES; INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO; IPHONEOS_DEPLOYMENT_TARGET = 17.0; MARKETING_VERSION = 1.0.0; PRODUCT_BUNDLE_IDENTIFIER = com.danbi.dealerrush; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_OPTIMIZATION_LEVEL = -O; DEBUG_INFORMATION_FORMAT = dwarf-with-dsym; }; name = Release; };
+  B48F0637DA179A96BEA0C97B = { isa = XCBuildConfiguration; buildSettings = { BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; PRODUCT_BUNDLE_IDENTIFIER = com.danbi.dealerrush.tests; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DealerRush.app/DealerRush"; SWIFT_OPTIMIZATION_LEVEL = -Onone; DEBUG_INFORMATION_FORMAT = dwarf; }; name = Debug; };
+  AAEC77A85B92260B0596B84C = { isa = XCBuildConfiguration; buildSettings = { BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; PRODUCT_BUNDLE_IDENTIFIER = com.danbi.dealerrush.tests; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DealerRush.app/DealerRush"; SWIFT_OPTIMIZATION_LEVEL = -O; DEBUG_INFORMATION_FORMAT = dwarf-with-dsym; }; name = Release; };
+ };
+ rootObject = 46F86FAA6BBF9AC94A7E4595;
+}
