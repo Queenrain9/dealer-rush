@@ -172,7 +172,7 @@ struct GameScreen: View {
     private func feedback(_ outcome: AnswerOutcome) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
-                Label(outcome.correct ? "NICE DEAL" : "판정 수정", systemImage: outcome.correct ? "checkmark.circle.fill" : "arrow.uturn.backward.circle")
+                Label(outcome.correct ? "NICE DEAL" : "판정 오류", systemImage: outcome.correct ? "checkmark.circle.fill" : "arrow.uturn.backward.circle")
                     .font(.subheadline.bold()).foregroundStyle(outcome.correct ? Color.green : Theme.ivory)
                 Spacer()
                 Text(outcome.correct ? "+\(outcome.points) XP" : "콤보 리셋")
@@ -202,7 +202,7 @@ struct GameScreen: View {
             Text(label).font(.caption2).foregroundStyle(Theme.muted)
             Text(value).font(.subheadline.weight(.semibold)).monospacedDigit().lineLimit(1).minimumScaleFactor(0.7)
                 .contentTransition(.numericText())
-                .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: value)
+                .animation(reduceMotion || label == "시간" ? nil : .easeOut(duration: 0.18), value: value)
         }.frame(maxWidth: .infinity)
     }
     private var canSubmit: Bool {
@@ -341,7 +341,7 @@ struct GameScreen: View {
             Image(systemName: "checkmark.seal.fill").font(.system(size: 58)).foregroundStyle(Theme.gold)
             Text(session.isDaily ? "오늘의 근무 종료" : "테이블 마감").font(.title2.bold())
             CompletionSummary(dailyKey: session.dailyKey, sessionID: session.sessionID)
-            PrimaryButton(title: "로비로 돌아가기") { dismiss() }
+            PrimaryButton(title: "근무 마치기") { dismiss() }
         }.padding(.top, 50)
     }
 }
@@ -355,11 +355,7 @@ private struct CompletionSummary: View {
         return records.filter { $0.sessionID == sessionID }
     }
     private var stats: TrainingStats { TrainingStats(records: selected) }
-    private var ratingDelta: Int? {
-        let ordered = selected.sorted { $0.questionIndex < $1.questionIndex }
-        guard let before = ordered.first?.ratingBefore, let after = ordered.last?.ratingAfter else { return nil }
-        return after - before
-    }
+    private var ratingDelta: Int? { ScoreCalculator.shiftRatingDelta(selected) }
     var body: some View {
         Panel {
             VStack(spacing: 16) {

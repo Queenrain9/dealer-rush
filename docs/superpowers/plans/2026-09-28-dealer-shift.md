@@ -46,3 +46,5 @@ Files: DealerRush/Views/GameViews.swift, HomePracticeViews.swift, ProgressViews.
 ## Execution ledger
 - Base: 9c51d45. Tests committed first; existing main workflow used because local environment has no Xcode.
 - Scope decision: no additional briefing screen. Existing Home/Daily/Practice explain the goal, so starting play stays one tap.
+
+- Review fix: resumed daily report now sums each selected answer’s saved rating delta, excluding interleaved practice. Regression test run 36486340069 first failed because method was absent.

@@ -46,6 +46,16 @@ enum ScoreCalculator {
     static func rating(_ records: [AnswerRecord]) -> Int {
         max(0, 1_000 + records.reduce(0) { $0 + ($1.correct ? max(1, $1.points / 12) : -12) })
     }
+    /// Rating earned in this shift only; other sessions may have occurred between its hands.
+    static func shiftRatingDelta(_ records: [AnswerRecord]) -> Int? {
+        guard !records.isEmpty else { return nil }
+        var delta = 0
+        for record in records {
+            guard let before = record.ratingBefore, let after = record.ratingAfter else { return nil }
+            delta += after - before
+        }
+        return delta
+    }
     static func tier(_ rating: Int) -> String {
         tierProgress(rating).name
     }
