@@ -177,4 +177,25 @@ final class LogicTests: XCTestCase {
         XCTAssertEqual(resumed.sessionScore, session.sessionScore)
     }
 
+
+    func testShiftRatingCountsOnlyItsSavedAnswersWhenPracticeIntervenes() {
+        let dailyID = UUID()
+        let first = AnswerRecord(mode: .showdown, difficulty: .beginner, correct: true,
+                                 responseSeconds: 1, points: 120, combo: 1,
+                                 dailyKey: "2026-09-28", questionIndex: 0)
+        first.sessionID = dailyID; first.ratingBefore = 1_000; first.ratingAfter = 1_010
+        let practice = AnswerRecord(mode: .sidePot, difficulty: .advanced, correct: true,
+                                    responseSeconds: 1, points: 360, combo: 1,
+                                    dailyKey: nil, questionIndex: 0)
+        practice.ratingBefore = 1_010; practice.ratingAfter = 1_040
+        let resumed = AnswerRecord(mode: .potCalculation, difficulty: .intermediate, correct: true,
+                                   responseSeconds: 2, points: 240, combo: 2,
+                                   dailyKey: "2026-09-28", questionIndex: 1)
+        resumed.sessionID = dailyID; resumed.ratingBefore = 1_040; resumed.ratingAfter = 1_060
+        XCTAssertEqual(ScoreCalculator.shiftRatingDelta([first, resumed]), 30)
+        XCTAssertEqual(ScoreCalculator.shiftRatingDelta([first, practice, resumed]), 60)
+        resumed.ratingAfter = nil
+        XCTAssertNil(ScoreCalculator.shiftRatingDelta([first, resumed]))
+    }
+
 }
