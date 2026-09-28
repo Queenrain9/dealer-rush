@@ -50,7 +50,16 @@ jobs:
             build/Build/Products/Debug-iphonesimulator/DealerRush.app \
             artifacts/DealerRush-Simulator.zip
 
+      - name: Save verified simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: DealerRush-Simulator-App
+          path: artifacts/DealerRush-Simulator.zip
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Capture app screens
+        timeout-minutes: 5
         run: |
           set -e
           xcrun simctl boot "$SIMULATOR_ID" || true
