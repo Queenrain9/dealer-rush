@@ -17,6 +17,12 @@ The Run action uses Debug, which does not request the Game Center entitlement. T
 
 Free Personal Team provisioning expires periodically, so use Run again when the app stops opening. Xcode's signing errors or an older iOS version must be resolved on that Mac and device. Never send Apple Account passwords or signing certificates to this repository.
 
+### No Mac: build on GitHub, install from a Windows PC
+
+The `iPhone Device IPA` GitHub Actions workflow builds an **unsigned iPhone device app** on a hosted Mac. Download its `DealerRush-iPhone-Unsigned-IPA` artifact, unzip the outer artifact archive, and use the inner `DealerRush-Unsigned.ipa`. This is different from the simulator ZIP and does not install by tapping the file on an iPhone.
+
+On your own Windows PC, an IPA sideloading tool such as AltStore Classic or Sideloadly can sign the IPA with your free Apple Account and install it on a USB-connected iPhone. Follow the tool's official instructions; enter your Apple Account only on your own computer, never into GitHub or chat. Free personal signing expires after seven days and needs refreshing with the same account and bundle identifier. Game Center rankings are unavailable in this Debug build, while offline play and local records work. Reinstall over the existing app to preserve local data; deleting the app deletes its local records. For a durable beta install without weekly refreshing, use an Apple Developer Program membership and TestFlight.
+
 CLI verification on a Mac:
 
 ```sh

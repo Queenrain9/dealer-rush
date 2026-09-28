@@ -1,0 +1,57 @@
+name: iPhone Device IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-device-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-unsigned-ipa:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build native iPhone app without signing
+        run: |
+          set -o pipefail
+          xcodebuild -project DealerRush.xcodeproj -scheme DealerRush \
+            -configuration Debug -sdk iphoneos -destination 'generic/platform=iOS' \
+            -derivedDataPath device-build CODE_SIGNING_ALLOWED=NO build \
+            2>&1 | tee device-build.log
+
+      - name: Package unsigned IPA for personal sideloading
+        run: |
+          set -e
+          app=device-build/Build/Products/Debug-iphoneos/DealerRush.app
+          test -d "$app"
+          file "$app/DealerRush"
+          plutil -extract CFBundleIdentifier raw "$app/Info.plist"
+          mkdir -p artifacts/Payload
+          ditto "$app" artifacts/Payload/DealerRush.app
+          rm -rf artifacts/Payload/DealerRush.app/PlugIns/DealerRushTests.xctest
+          (cd artifacts && ditto -c -k --keepParent Payload DealerRush-Unsigned.ipa)
+          unzip -t artifacts/DealerRush-Unsigned.ipa | tail -1
+
+      - name: Save iPhone IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: DealerRush-iPhone-Unsigned-IPA
+          path: artifacts/DealerRush-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Save build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iPhone-build-log
+          path: device-build.log
+          retention-days: 7
