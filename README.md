@@ -4,7 +4,18 @@ Native SwiftUI iPhone training game based on `Docs/DesignDirection-v1.jpeg`. Sho
 
 ## Open and run
 
-Requires macOS with Xcode 16 or newer, iOS 17 SDK or newer, and an iPhone simulator. Open `DealerRush.xcodeproj`, select the shared `DealerRush` scheme, choose an iPhone simulator, then Run. The minimum deployment target is iOS 17. The project is portrait only. To run on a physical iPhone, set your Development Team under Signing & Capabilities, use an available bundle identifier and enable Game Center for that App ID.
+Requires macOS with Xcode 16 or newer, iOS 17 SDK or newer, and an iPhone simulator. Open `DealerRush.xcodeproj`, select the shared `DealerRush` scheme, choose an iPhone simulator, then Run. The minimum deployment target is iOS 17. The project is portrait only.
+
+### Free personal iPhone install from Xcode
+
+The Run action uses Debug, which does not request the Game Center entitlement. This allows the core offline game and saved stats to run with a free Apple Account's Personal Team; online ranking needs a paid team and configured Game Center. Release retains the Game Center entitlement for future TestFlight/App Store distribution.
+
+1. On a Mac, install Xcode 16 or newer. Download the source repository ZIP from GitHub (Code → Download ZIP) and unzip it. The Appetize simulator ZIP is not the Xcode source project.
+2. Open `DealerRush.xcodeproj`. In Xcode → Settings → Apple Accounts, add your own Apple Account. Connect your iPhone by cable, unlock it and tap Trust if prompted. The phone needs iOS 17 or newer.
+3. Select the blue `DealerRush` project icon, then the `DealerRush` app target (not `DealerRushTests`). In Signing & Capabilities, keep Automatically manage signing on and choose your `Personal Team`. If Xcode reports the bundle identifier is unavailable, change it to a unique reverse-domain identifier such as `com.yourname.dealerrush.personal`. Do not change the Release/Game Center entitlement to make a personal build.
+4. Choose your connected iPhone in Xcode's device picker. On the phone, enable Settings → Privacy & Security → Developer Mode if Xcode asks, then restart and confirm. Press Xcode's Run (▶︎) button. Xcode builds, signs and installs the app on your home screen.
+
+Free Personal Team provisioning expires periodically, so use Run again when the app stops opening. Xcode's signing errors or an older iOS version must be resolved on that Mac and device. Never send Apple Account passwords or signing certificates to this repository.
 
 CLI verification on a Mac:
 
