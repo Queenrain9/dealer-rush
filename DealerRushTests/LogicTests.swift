@@ -129,4 +129,52 @@ final class LogicTests: XCTestCase {
         XCTAssertEqual(restored.sessionScore, first.outcome?.sessionScore)
         XCTAssertEqual(try context.fetch(FetchDescriptor<AnswerRecord>()).count, 1)
     }
+
+    @MainActor func testAnsweredHandFreezesClockAndCannotBeScoredTwice() throws {
+        let container = try ModelContainer(for: AnswerRecord.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let session = TrainingSession(mode: .showdown, practiceDifficulty: .beginner)
+        session.start(context: container.mainContext)
+        guard case let .some(.showdown(question)) = session.question else { return XCTFail("Expected showdown") }
+        session.selectedPlayer = question.winners.count > 1 ? -1 : question.winners[0]
+        session.submit(context: container.mainContext)
+        let outcome = try XCTUnwrap(session.outcome)
+        XCTAssertEqual(session.elapsedSeconds(at: Date().addingTimeInterval(30)), outcome.seconds, accuracy: 0.001)
+        session.submit(context: container.mainContext)
+        XCTAssertEqual(session.answeredCount, 1)
+        XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<AnswerRecord>()).count, 1)
+        session.next()
+        XCTAssertNil(session.outcome)
+        XCTAssertLessThan(session.elapsedSeconds(), 1)
+    }
+
+    @MainActor func testTenHandDailyShiftKeepsEveryModeAndSavedProgress() throws {
+        let container = try ModelContainer(for: AnswerRecord.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let context = container.mainContext
+        let session = TrainingSession(dailyKey: "2026-09-28")
+        session.start(context: context)
+        for index in 0..<10 {
+            XCTAssertEqual(session.index, index)
+            switch try XCTUnwrap(session.question) {
+            case let .showdown(q): session.selectedPlayer = q.winners.count > 1 ? -1 : q.winners[0]
+            case let .mainPot(q): session.amountEntries = [String(q.pots[0].amount)]
+            case let .sidePot(q): session.amountEntries = q.pots.map { String($0.amount) }
+            }
+            session.submit(context: context)
+            XCTAssertTrue(try XCTUnwrap(session.outcome).correct)
+            session.next()
+        }
+        XCTAssertTrue(session.finished)
+        XCTAssertEqual(session.combo, 10)
+        let records = try context.fetch(FetchDescriptor<AnswerRecord>())
+        XCTAssertEqual(records.count, 10)
+        XCTAssertEqual(Set(records.map(\.mode)).count, 3)
+        XCTAssertEqual(session.sessionScore, records.reduce(0) { $0 + $1.points })
+        let resumed = TrainingSession(dailyKey: "2026-09-28")
+        resumed.start(context: context)
+        XCTAssertTrue(resumed.finished)
+        XCTAssertEqual(resumed.sessionScore, session.sessionScore)
+    }
+
 }
