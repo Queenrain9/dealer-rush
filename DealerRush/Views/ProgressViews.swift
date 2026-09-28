@@ -9,27 +9,26 @@ struct DailyView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                ScreenTitle(eyebrow: key, title: "오늘의 딜러 테스트")
+                ScreenTitle(eyebrow: key, title: "오늘의 근무")
                 Panel {
                     VStack(alignment: .leading, spacing: 18) {
-                        Text("TODAY'S DEALER TEST").font(.caption.weight(.bold)).tracking(1.4).foregroundStyle(Theme.gold)
-                        Text("오늘 날짜로 고정된 10문제에 도전합니다.").font(.headline)
-                        Text("하루 한 번의 공식 기록입니다. 중간에 앱을 닫아도 이어서 풀 수 있어요.").font(.subheadline).foregroundStyle(Theme.muted)
+                        Text("TODAY’S SHIFT").font(.caption.weight(.bold)).tracking(1.4).foregroundStyle(Theme.gold)
+                        Text("매일 새로 열리는 10핸드 테이블.").font(.headline)
+                        Text("목표는 정확한 판정 8회. 속도와 연속 성공으로 점수를 높이세요. 하루 한 번의 공식 기록이며, 중간에 나가도 이어서 플레이할 수 있어요.").font(.subheadline).foregroundStyle(Theme.muted)
                         ProgressView(value: Double(records.count), total: 10).tint(Theme.gold)
-                        HStack { info("\(records.count)/10", "문제 수"); info("\(records.filter(\.correct).count)", "정답"); info("1회", "공식 기록") }
+                        HStack { info("\(records.count)/10", "핸드"); info("\(records.filter(\.correct).count)", "정답"); info("1회", "공식 기록") }
                     }
                 }
                 if records.count < 10 {
                     NavigationLink { GameScreen(dailyKey: key) } label: {
-                        Text(records.isEmpty ? "도전하기" : "계속하기").font(.headline).frame(maxWidth: .infinity).frame(minHeight: 54).background(Theme.red.gradient, in: RoundedRectangle(cornerRadius: 16))
+                        Text(records.isEmpty ? "테이블 맡기" : "근무 이어가기").font(.headline).frame(maxWidth: .infinity).frame(minHeight: 54).background(Theme.red.gradient, in: RoundedRectangle(cornerRadius: 16))
                     }.buttonStyle(.plain)
                 } else {
                     Panel {
                         VStack(alignment: .leading, spacing: 12) {
-                            Label("오늘 완료", systemImage: "checkmark.circle.fill").foregroundStyle(Theme.gold)
+                            Label(records.allSatisfy(\.correct) ? "PERFECT SHIFT" : records.filter(\.correct).count >= 8 ? "근무 목표 달성" : "오늘의 근무 완료", systemImage: "checkmark.circle.fill").foregroundStyle(Theme.gold)
                             Text("\(records.reduce(0) { $0 + $1.points }.formatted()) XP").font(.largeTitle.bold()).foregroundStyle(Theme.gold)
                             Text("정확도 \(Int(Double(records.filter(\.correct).count) / 10 * 100))% · 총 \(String(format: "%.1f", records.map(\.responseSeconds).reduce(0,+)))초")
-                            if records.allSatisfy(\.correct) { Text("PERFECT").foregroundStyle(Theme.gold).bold() }
                             if let standing = gameCenter.dailyStanding {
                                 Text("Game Center 오늘 순위 #\(standing.rank) / \(standing.total.formatted())")
                                     .font(.subheadline).foregroundStyle(Theme.ivory)
@@ -41,7 +40,7 @@ struct DailyView: View {
                     }
                 }
             }.padding(20)
-        }.navigationTitle("오늘의 딜러 테스트").navigationBarTitleDisplayMode(.inline)
+        }.navigationTitle("오늘의 근무").navigationBarTitleDisplayMode(.inline)
             .onAppear { if records.count == 10 { gameCenter.loadDailyStanding() } }
             .rushBackground()
     }
@@ -61,7 +60,7 @@ struct StatsView: View {
                 if let change = stats.comparison {
                     Panel {
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("최근 10문제와 이전 10문제").font(.headline)
+                            Text("최근 10핸드와 이전 10핸드").font(.headline)
                             comparisonRow("Dealer Rating", "\(change.olderRating.formatted())", "\(change.recentRating.formatted())")
                             comparisonRow("정확도", "\(Int(change.olderAccuracy * 100))%", "\(Int(change.recentAccuracy * 100))%")
                             comparisonRow("평균 시간", String(format: "%.1f초", change.olderAverageSeconds), String(format: "%.1f초", change.recentAverageSeconds))

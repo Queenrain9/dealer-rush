@@ -68,32 +68,52 @@ struct PotTableView: View {
 struct GameScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Query private var records: [AnswerRecord]
     @State private var session: TrainingSession
     @StateObject private var gameCenter = GameCenterManager.shared
+    @State private var showingExplanation = false
     @FocusState private var amountFocused: Bool
     init(mode: TrainingMode? = nil, dailyKey: String? = nil, practiceDifficulty: Difficulty? = nil) {
         _session = State(initialValue: TrainingSession(mode: mode, dailyKey: dailyKey, practiceDifficulty: practiceDifficulty))
     }
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                if session.finished { completed }
-                else if let outcome = session.outcome { result(outcome) }
-                else if let question = session.question {
-                    trainingHeader
-                    switch question {
-                    case let .showdown(q): showdown(q)
-                    case let .mainPot(q): mainPot(q)
-                    case let .sidePot(q): sidePot(q)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 18) {
+                    if session.finished { completed.id("handTop") }
+                    else if let question = session.question {
+                        trainingHeader.id("handTop")
+                        Group {
+                            switch question {
+                            case let .showdown(q): showdown(q)
+                            case let .mainPot(q): mainPot(q)
+                            case let .sidePot(q): sidePot(q)
+                            }
+                        }.disabled(session.outcome != nil)
+                        if let error = session.error { Text(error).font(.footnote).foregroundStyle(.red) }
                     }
-                    if let error = session.error { Text(error).font(.footnote).foregroundStyle(.red) }
-                    PrimaryButton(title: "확인하기", enabled: canSubmit) { submit() }
-                }
-            }.padding(20).frame(maxWidth: 560)
-                .frame(maxWidth: .infinity)
+                }.padding(20).frame(maxWidth: 560).frame(maxWidth: .infinity)
+            }
+            .onChange(of: session.index) { _, _ in proxy.scrollTo("handTop", anchor: .top) }
         }
-        .navigationTitle(session.isDaily ? "데일리 챌린지" : session.mode.title)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if !session.finished, session.question != nil {
+                VStack(spacing: 10) {
+                    if let outcome = session.outcome { feedback(outcome) }
+                    PrimaryButton(title: session.outcome == nil ? actionTitle : session.index == 9 ? "근무 평가 보기" : "다음 핸드  →",
+                                  enabled: session.outcome != nil || canSubmit) {
+                        amountFocused = false
+                        if session.outcome == nil { submit() } else { nextHand() }
+                    }
+                }.padding(.horizontal, 20).padding(.vertical, 12)
+                    .frame(maxWidth: 560).frame(maxWidth: .infinity)
+                    .background(Theme.background)
+            }
+        }
+        .navigationTitle(session.isDaily ? "오늘의 근무" : session.mode.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .onAppear { session.start(context: context) }
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
@@ -102,26 +122,87 @@ struct GameScreen: View {
                 Button("완료") { amountFocused = false }
             }
         }
+        .sheet(isPresented: $showingExplanation) {
+            NavigationStack {
+                ScrollView {
+                    if let outcome = session.outcome { result(outcome).padding(20) }
+                }
+                .navigationTitle("판정 확인").navigationBarTitleDisplayMode(.inline)
+                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("닫기") { showingExplanation = false } } }
+                .rushBackground()
+            }.presentationDetents([.medium, .large])
+        }
         .rushBackground()
+    }
+    private var actionTitle: String {
+        switch session.mode {
+        case .showdown: "팟 지급 확정"
+        case .potCalculation: "메인 팟 확정"
+        case .sidePot: "팟 분리 확정"
+        }
+    }
+    private var successfulHands: Int {
+        records.filter { record in
+            let belongsToShift = session.dailyKey.map { record.dailyKey == $0 } ?? (record.sessionID == session.sessionID)
+            return belongsToShift && record.correct
+        }.count
     }
     private var trainingHeader: some View {
         VStack(spacing: 10) {
-            HStack { Text(session.difficulty.title); Spacer(); Text("\(session.index + 1) / 10") }
-                .font(.caption).foregroundStyle(Theme.muted)
-            ProgressView(value: Double(session.index + 1), total: 10).tint(Theme.gold)
+            HStack {
+                Text("HAND \(session.index + 1) / 10").foregroundStyle(Theme.gold)
+                Spacer()
+                Text(session.difficulty.title).foregroundStyle(Theme.muted)
+            }.font(.caption.weight(.semibold)).monospacedDigit()
+            ProgressView(value: Double(session.answeredCount), total: 10).tint(Theme.gold)
             HStack(spacing: 0) {
                 TimelineView(.periodic(from: .now, by: 0.1)) { timeline in
                     miniMetric(String(format: "%.2f초", session.elapsedSeconds(at: timeline.date)), "시간")
                 }
-                miniMetric("×\(session.combo)", "콤보")
-                miniMetric(session.sessionScore.formatted(), "세션 점수")
+                miniMetric("×\(session.combo)", "연속 성공")
+                miniMetric(session.sessionScore.formatted(), "SCORE")
             }.padding(.vertical, 10).background(Theme.panel, in: RoundedRectangle(cornerRadius: 12))
+            HStack {
+                Label(successfulHands >= 8 ? "목표 달성" : "정확한 판정 · 목표 8", systemImage: successfulHands >= 8 ? "checkmark.seal.fill" : "flag.checkered")
+                Spacer()
+                Text("\(successfulHands) / 10").monospacedDigit()
+            }.font(.caption.weight(.medium)).foregroundStyle(successfulHands >= 8 ? Theme.gold : Theme.muted)
+        }
+    }
+    private func feedback(_ outcome: AnswerOutcome) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Label(outcome.correct ? "NICE DEAL" : "판정 수정", systemImage: outcome.correct ? "checkmark.circle.fill" : "arrow.uturn.backward.circle")
+                    .font(.subheadline.bold()).foregroundStyle(outcome.correct ? Color.green : Theme.ivory)
+                Spacer()
+                Text(outcome.correct ? "+\(outcome.points) XP" : "콤보 리셋")
+                    .font(.subheadline.bold()).foregroundStyle(Theme.gold).monospacedDigit()
+            }
+            Button { showingExplanation = true } label: {
+                HStack(alignment: .top, spacing: 8) {
+                    Text(outcome.explanation).lineLimit(2).multilineTextAlignment(.leading)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                }.font(.caption).foregroundStyle(Theme.muted).frame(minHeight: 44)
+            }.buttonStyle(.plain).accessibilityLabel("판정 해설: \(outcome.explanation)")
+        }
+        .accessibilityElement(children: .contain)
+    }
+    private func nextHand() {
+        session.next()
+        if session.finished {
+            Feedback.complete()
+            if let key = session.dailyKey, let records = try? context.fetch(FetchDescriptor<AnswerRecord>()) {
+                gameCenter.publishDaily(records.filter { $0.dailyKey == key }.reduce(0) { $0 + $1.points })
+            }
         }
     }
     private func miniMetric(_ value: String, _ label: String) -> some View {
         VStack(spacing: 4) {
             Text(label).font(.caption2).foregroundStyle(Theme.muted)
             Text(value).font(.subheadline.weight(.semibold)).monospacedDigit().lineLimit(1).minimumScaleFactor(0.7)
+                .contentTransition(.numericText())
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: value)
         }.frame(maxWidth: .infinity)
     }
     private var canSubmit: Bool {
@@ -145,7 +226,7 @@ struct GameScreen: View {
                     HStack(spacing: 5) { ForEach(question.board) { PlayingCardView(card: $0) } }
                 }
             }
-            Text("누가 이기나요?").font(.title2.weight(.semibold))
+            Text("팟을 받을 플레이어는?").font(.title2.weight(.semibold))
             ForEach(question.players.indices, id: \.self) { index in
                 Button {
                     session.selectedPlayer = index; Feedback.tap()
@@ -188,7 +269,7 @@ struct GameScreen: View {
     }
     private func mainPot(_ question: PotQuestion) -> some View {
         VStack(spacing: 22) {
-            Text("메인 팟 금액은 얼마인가요?").font(.title3.weight(.semibold)).multilineTextAlignment(.center)
+            Text("메인 팟을 정리하세요").font(.title3.weight(.semibold)).multilineTextAlignment(.center)
             PotTableView(contributions: question.contributions)
             let right = question.pots[0].amount
             let choices = Array(Set([right, right + 10_000, max(5_000, right - 10_000), question.contributions.reduce(0,+)])).sorted()
@@ -207,7 +288,7 @@ struct GameScreen: View {
     }
     private func sidePot(_ question: PotQuestion) -> some View {
         VStack(spacing: 20) {
-            Text("각 팟의 금액을 계산하세요").font(.title3.weight(.semibold))
+            Text("메인 팟과 사이드 팟을 분리하세요").font(.title3.weight(.semibold))
             contributionList(question.contributions)
             ForEach(question.pots.indices, id: \.self) { index in
                 Panel {
@@ -227,7 +308,7 @@ struct GameScreen: View {
         VStack(spacing: 20) {
             Image(systemName: outcome.correct ? "checkmark.circle.fill" : "xmark.circle.fill")
                 .font(.system(size: 50)).foregroundStyle(outcome.correct ? .green : Theme.red)
-            Text(outcome.correct ? "정답입니다!" : "다시 익혀보세요").font(.title2.bold())
+            Text(outcome.correct ? "정확한 판정!" : "올바른 판정을 확인하세요").font(.title2.bold())
             Text(outcome.explanation).font(.subheadline).multilineTextAlignment(.center).foregroundStyle(Theme.ivory)
             HStack {
                 metric("+\(outcome.points) XP", "획득 점수")
@@ -248,15 +329,7 @@ struct GameScreen: View {
                     Text("세션 점수 \(outcome.sessionScore.formatted())").font(.subheadline).foregroundStyle(Theme.muted)
                 }
             }
-            PrimaryButton(title: session.index == 9 ? "기록 확인" : "다음 문제") {
-                session.next()
-                if session.finished {
-                    Feedback.complete()
-                    if let key = session.dailyKey, let records = try? context.fetch(FetchDescriptor<AnswerRecord>()) {
-                        gameCenter.publishDaily(records.filter { $0.dailyKey == key }.reduce(0) { $0 + $1.points })
-                    }
-                }
-            }
+
         }.padding(.top, 30).frame(maxWidth: .infinity)
     }
     private func metric(_ value: String, _ title: String) -> some View {
@@ -266,9 +339,9 @@ struct GameScreen: View {
     private var completed: some View {
         VStack(spacing: 22) {
             Image(systemName: "checkmark.seal.fill").font(.system(size: 58)).foregroundStyle(Theme.gold)
-            Text(session.isDaily ? "오늘의 챌린지 완료" : "연습 완료").font(.title2.bold())
+            Text(session.isDaily ? "오늘의 근무 종료" : "테이블 마감").font(.title2.bold())
             CompletionSummary(dailyKey: session.dailyKey, sessionID: session.sessionID)
-            PrimaryButton(title: "돌아가기") { dismiss() }
+            PrimaryButton(title: "로비로 돌아가기") { dismiss() }
         }.padding(.top, 50)
     }
 }
@@ -281,14 +354,34 @@ private struct CompletionSummary: View {
         if let dailyKey { return records.filter { $0.dailyKey == dailyKey } }
         return records.filter { $0.sessionID == sessionID }
     }
+    private var stats: TrainingStats { TrainingStats(records: selected) }
+    private var ratingDelta: Int? {
+        let ordered = selected.sorted { $0.questionIndex < $1.questionIndex }
+        guard let before = ordered.first?.ratingBefore, let after = ordered.last?.ratingAfter else { return nil }
+        return after - before
+    }
     var body: some View {
         Panel {
-            VStack(spacing: 12) {
-                Text("\(selected.reduce(0) { $0 + $1.points }.formatted()) XP").font(.system(size: 34, weight: .bold, design: .rounded)).foregroundStyle(Theme.gold)
-                HStack { Text("정답률"); Spacer(); Text("\(selected.filter(\.correct).count) / \(selected.count)") }
+            VStack(spacing: 16) {
+                Text(stats.correct == 10 ? "PERFECT SHIFT" : stats.correct >= 8 ? "근무 목표 달성" : "다음 근무에서 다시 도전")
+                    .font(.headline).foregroundStyle(Theme.gold).multilineTextAlignment(.center)
+                Text("\(selected.reduce(0) { $0 + $1.points }.formatted())")
+                    .font(.system(size: 44, weight: .bold, design: .rounded)).foregroundStyle(Theme.ivory)
+                Text("SHIFT SCORE").font(.caption.weight(.semibold)).tracking(2).foregroundStyle(Theme.muted)
+                HStack { Text("정확한 판정"); Spacer(); Text("\(stats.correct) / 10") }
                 HStack { Text("총 시간"); Spacer(); Text(String(format: "%.1f초", selected.map(\.responseSeconds).reduce(0,+))) }
-                if selected.count == 10 && selected.allSatisfy(\.correct) { Label("PERFECT", systemImage: "star.fill").foregroundStyle(Theme.gold) }
-            }
+                HStack { Text("최고 콤보"); Spacer(); Text("×\(stats.bestCombo)") }
+                if let delta = ratingDelta {
+                    Divider()
+                    HStack {
+                        Text("Dealer Rating")
+                        Spacer()
+                        Text(delta >= 0 ? "+\(delta)" : "\(delta)").fontWeight(.bold).foregroundStyle(Theme.gold)
+                    }
+                }
+                Text("정확한 판정 8회가 근무 목표입니다.\n기록은 커리어에 저장됐어요.")
+                    .font(.caption).foregroundStyle(Theme.muted).multilineTextAlignment(.center)
+            }.monospacedDigit()
         }
     }
 }

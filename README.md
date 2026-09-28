@@ -44,4 +44,11 @@ Match the displayed Weekly / Global / Friends filters to the configuration. Frie
 
 Set the final bundle identifier and Development Team in Xcode. Verify Game Center IDs, entitlement and capabilities. Run tests, perform device QA, capture App Store screenshots from the actual app, then select Product → Archive → Distribute App → App Store Connect → Upload. Set version 1.0.0 and increment build number for each TestFlight upload. Complete the privacy and age rating questionnaires in App Store Connect using actual app behavior. See `Docs/Release.md` for copy and a handoff checklist.
 
-This source was authored in a Linux workspace without Xcode. It has not been compiled, run in Simulator, device tested, archived, uploaded or approved by Apple. These gates must be completed on a Mac before it can be called a release build.
+GitHub Actions builds the native app with Xcode, runs XCTest on an iPhone simulator, and uploads an unsigned simulator app ZIP plus actual screen captures. The simulator ZIP is suitable for Appetize; it cannot be installed directly on a physical iPhone. Physical-device signing, device QA, Archive and App Store submission still require the owner’s Apple development setup.
+
+
+## Build 2: Dealer shift flow
+
+The existing ten-question session is presented as a ten-hand table shift. The player aims for eight accurate decisions; ten correct decisions earn a Perfect Shift evaluation. Cards and pot information remain visible after answering, with compact feedback and a next-hand button. Detailed explanations open in a native sheet. The final report uses saved answers for score, time, best combo and rating change. Home, Daily and the Play tab lead into the same loop.
+
+The poker engines, daily seeds, storage schema and score/rating formulas are unchanged. The answer timer freezes on submission and resets for the next hand. There is no new economy, currency, betting or account system.

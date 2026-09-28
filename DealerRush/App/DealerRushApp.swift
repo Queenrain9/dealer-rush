@@ -42,7 +42,7 @@ private struct RootView: View {
                     Text("DEALER\nRUSH")
                         .font(.system(size: 52, weight: .bold, design: .serif))
                         .multilineTextAlignment(.center)
-                    Text("POKER DEALER TRAINING GAME")
+                    Text("THINK FAST. DEAL RIGHT.")
                         .font(.caption)
                         .tracking(2)
                         .foregroundStyle(Theme.muted)
@@ -54,7 +54,7 @@ private struct RootView: View {
                     NavigationStack { HomeView() }
                         .tabItem { Label("홈", systemImage: "house.fill") }
                     NavigationStack { PracticeView() }
-                        .tabItem { Label("연습", systemImage: "suit.club.fill") }
+                        .tabItem { Label("플레이", systemImage: "suit.club.fill") }
                     NavigationStack { StatsView() }
                         .tabItem { Label("통계", systemImage: "chart.bar.fill") }
                     NavigationStack { RankingView() }

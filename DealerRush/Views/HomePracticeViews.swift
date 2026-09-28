@@ -13,7 +13,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("DEALER RUSH").font(.caption.weight(.semibold)).tracking(2).foregroundStyle(Theme.gold)
-                    Text("오늘도 정확하게.").font(.system(.title2, design: .serif, weight: .semibold))
+                    Text("오늘, 테이블을 맡아볼까요?").font(.system(.title2, design: .serif, weight: .semibold))
                 }.padding(.bottom, 4)
                 RatingHeroCard(rating: stats.rating)
                 NavigationLink { DailyView() } label: {
@@ -22,18 +22,18 @@ struct HomeView: View {
                             HStack {
                                 Image(systemName: "checkmark.seal.fill").font(.title2).foregroundStyle(Theme.gold)
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("TODAY'S DEALER TEST").font(.caption.weight(.bold)).tracking(1.2).foregroundStyle(Theme.gold)
-                                    Text(dailyCount == 10 ? "오늘의 테스트 완료" : "오늘의 10문제에 도전하세요").font(.subheadline)
+                                    Text("TODAY’S SHIFT").font(.caption.weight(.bold)).tracking(1.2).foregroundStyle(Theme.gold)
+                                    Text(dailyCount == 10 ? "오늘의 근무 완료" : "10핸드 · 8번의 정확한 판정에 도전").font(.subheadline)
                                 }
                                 Spacer(); Image(systemName: "chevron.right").foregroundStyle(Theme.muted)
                             }
                             HStack(spacing: 14) {
-                                Label("10문제", systemImage: "checkmark.circle")
+                                Label("10핸드", systemImage: "checkmark.circle")
                                 Label("공식 기록 1회", systemImage: "rosette")
                                 Spacer(minLength: 0)
                             }.font(.caption).foregroundStyle(Theme.muted)
                             ProgressView(value: Double(dailyCount), total: 10).tint(Theme.gold)
-                            Text(dailyCount == 10 ? "오늘의 기록 보기" : dailyCount == 0 ? "오늘의 테스트 시작하기  →" : "\(dailyCount)/10 · 이어서 도전하기  →")
+                            Text(dailyCount == 10 ? "오늘의 기록 보기" : dailyCount == 0 ? "오늘의 근무 시작하기  →" : "\(dailyCount)/10 · 이어서 도전하기  →")
                                 .font(.subheadline.weight(.semibold)).frame(maxWidth: .infinity).frame(minHeight: 44)
                                 .background(Theme.ivory, in: RoundedRectangle(cornerRadius: 12)).foregroundStyle(Theme.background)
                         }
@@ -44,7 +44,7 @@ struct HomeView: View {
                         HStack(spacing: 15) {
                             Image(systemName: lastMode.icon).font(.title2).foregroundStyle(Theme.gold).frame(width: 42)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("최근 모드 연습하기").font(.caption).foregroundStyle(Theme.muted)
+                                Text("테이블 다시 맡기").font(.caption).foregroundStyle(Theme.muted)
                                 Text(lastMode.title).font(.headline)
                             }
                             Spacer(); Image(systemName: "play.circle.fill").font(.title).foregroundStyle(Theme.ivory)
@@ -85,8 +85,8 @@ struct PracticeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                ScreenTitle(eyebrow: "TRAINING", title: "연습하기")
-                Text("하나의 커리어, 세 가지 딜러 판단 훈련.").foregroundStyle(Theme.muted)
+                ScreenTitle(eyebrow: "CHOOSE YOUR TABLE", title: "테이블 선택")
+                Text("10핸드를 맡아 8번 이상 정확하게 판정하세요. 빠른 판단과 콤보로 최고 점수에 도전합니다.").foregroundStyle(Theme.muted)
                 Picker("난이도", selection: $selectedDifficulty) {
                     ForEach(Difficulty.allCases) { difficulty in Text(difficulty.title).tag(difficulty) }
                 }.pickerStyle(.segmented)
@@ -100,7 +100,7 @@ struct PracticeView: View {
                                     Text(mode.title).font(.headline)
                                     Text("Lv.\(mastery.level) · 숙련도 \(mastery.percent)% · 정답률 \(Int(mastery.accuracy * 100))%").font(.caption).foregroundStyle(Theme.muted)
                                     ProgressView(value: Double(mastery.percent), total: 100).tint(Theme.gold)
-                                    Text(mastery.personalBest == 0 ? "첫 기록을 만들어보세요" : "최고 \(mastery.personalBest.formatted()) XP · 최근 10문제 \(mastery.recentCorrect)정답")
+                                    Text(mastery.personalBest == 0 ? "첫 기록을 만들어보세요" : "최고 \(mastery.personalBest.formatted()) XP · 최근 10핸드 \(mastery.recentCorrect)정답")
                                         .font(.caption2).foregroundStyle(Theme.muted)
                                 }
                                 Spacer(); Image(systemName: "chevron.right").foregroundStyle(Theme.muted)

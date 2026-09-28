@@ -36,7 +36,10 @@ struct AnswerOutcome {
     var mode: TrainingMode { requestedMode ?? DailyChallenge.mode(at: index) }
     var difficulty: Difficulty { isDaily ? DailyChallenge.difficulty(at: index) : (practiceDifficulty ?? (index < 3 ? .beginner : index < 7 ? .intermediate : .advanced)) }
     var finished: Bool { index >= 10 }
-    func elapsedSeconds(at date: Date = .now) -> Double { max(0, date.timeIntervalSince(startedAt)) }
+    func elapsedSeconds(at date: Date = .now) -> Double {
+        // Feedback stays on the table; its clock must match the saved answer.
+        outcome?.seconds ?? max(0, date.timeIntervalSince(startedAt))
+    }
 
     func start(context: ModelContext) {
         guard question == nil else { return }
